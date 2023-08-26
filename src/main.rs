@@ -20,9 +20,9 @@ fn main() {
     let c = a.unprepend();
     let b = a.copy_to_vec();
     println!("Unprepend: {b:?} {c:?}");
-    let c = a.pop();
+    let c = a.remove_at(3);
     let b = a.copy_to_vec();
-    println!("Pop: {b:?} {c:?}");
+    println!("Remove: {b:?} {c:?}");
     let c = a.pop();
     let b = a.copy_to_vec();
     println!("Pop: {b:?} {c:?}");

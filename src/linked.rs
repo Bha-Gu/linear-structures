@@ -133,6 +133,43 @@ impl<T: Clone> LinkedList<T> {
         }
     }
 
+    pub fn remove_at(&mut self, idx: usize) -> Option<T> {
+        if idx == 0 {
+            self.unprepend()
+        } else if idx + 1 >= self.length {
+            self.pop()
+        } else {
+            let mut curr = self.head.clone();
+            for _i in 0..(idx - 1) {
+                if let Some(ref_node) = curr {
+                    curr = ref_node.borrow().next.clone();
+                } else {
+                    break;
+                }
+            }
+            let ref_node = curr.unwrap();
+            let next = ref_node
+                .borrow()
+                .next
+                .clone()
+                .unwrap()
+                .borrow()
+                .next
+                .clone();
+            let out = ref_node
+                .borrow()
+                .next
+                .clone()
+                .unwrap()
+                .borrow()
+                .value
+                .clone();
+            ref_node.borrow_mut().next = next;
+            self.length -= 1;
+            Some(out)
+        }
+    }
+
     pub fn copy_to_vec(&self) -> Vec<T> {
         let mut out = vec![];
         let mut curr = self.head.clone();
