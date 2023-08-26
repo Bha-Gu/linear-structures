@@ -6,7 +6,7 @@ fn main() {
     a.append(7);
     a.prepend(6);
     a.append(5);
-    a.insert_at(8, 4);
+    a.insert_at(8, 2);
     let b = a.copy_to_vec();
     println!("{b:?}");
 }

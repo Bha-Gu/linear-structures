@@ -29,22 +29,22 @@ impl<T: Clone> LinkedList<T> {
     }
 
     pub fn append(&mut self, item: T) {
-        self.length += 1;
         let mut curr = self.head.clone();
         if curr.is_none() {
             self.prepend(item);
             return;
         }
+        self.length += 1;
         let node = Rc::new(RefCell::new(Node {
             value: item,
             next: None,
         }));
 
-        while let Some(c_node) = curr {
-            if c_node.borrow().next.is_some() {
-                curr = c_node.borrow().next.clone();
+        while let Some(ref_node) = curr {
+            if ref_node.borrow().next.is_some() {
+                curr = ref_node.borrow().next.clone(); //borrow => read only refered var
             } else {
-                c_node.borrow_mut().next = Some(node);
+                ref_node.borrow_mut().next = Some(node); // borrow_mut => modift refered var
                 break;
             }
         }
@@ -59,18 +59,19 @@ impl<T: Clone> LinkedList<T> {
             self.length += 1;
             let mut curr = self.head.clone();
             for _i in 0..(idx - 1) {
-                if let Some(c_node) = curr {
-                    curr = c_node.borrow().next.clone();
+                if let Some(ref_node) = curr {
+                    curr = ref_node.borrow().next.clone();
                 } else {
                     break;
                 }
             }
-            let c_node = curr.unwrap();
+            let ref_node =
+                curr.expect("Should not be possible to see.\n fn insert_at index out of bound");
             let node = Rc::new(RefCell::new(Node {
                 value: item,
-                next: c_node.borrow().next.clone(),
+                next: ref_node.borrow().next.clone(),
             }));
-            c_node.borrow_mut().next = Some(node);
+            ref_node.borrow_mut().next = Some(node);
         }
     }
 
