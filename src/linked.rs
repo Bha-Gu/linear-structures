@@ -50,6 +50,35 @@ impl<T: Clone> LinkedList<T> {
         }
     }
 
+    pub fn unprepend(&mut self) {
+        if self.length > 0 {
+            self.length -= 1;
+            self.head = self.head.clone().unwrap().borrow().next.clone();
+        }
+    }
+
+    pub fn pop(&mut self) {
+        if self.length <= 1 {
+            self.unprepend();
+        } else {
+            let mut curr = self.head.clone();
+            if self.length == 2 {
+                curr.unwrap().borrow_mut().next = None;
+            } else {
+                for _ in 0..self.length - 2 {
+                    if let Some(ref_node) = curr {
+                        curr = ref_node.borrow().next.clone();
+                    }
+                }
+                curr.expect("Should not be possible\n fn pop over steped")
+                    .borrow_mut()
+                    .next = None;
+            }
+            // ref_node.borrow_mut().next = None;
+            self.length -= 1;
+        }
+    }
+
     pub fn insert_at(&mut self, item: T, idx: usize) {
         if idx == 0 || self.length == 0 {
             self.prepend(item);
