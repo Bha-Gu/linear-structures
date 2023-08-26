@@ -17,13 +17,13 @@ fn main() {
     a.insert_at(8, 2);
     let b = a.copy_to_vec();
     println!("Insert: {b:?}");
-    a.unprepend();
+    let c = a.unprepend();
     let b = a.copy_to_vec();
-    println!("Unprepend: {b:?}");
-    a.pop();
+    println!("Unprepend: {b:?} {c:?}");
+    let c = a.pop();
     let b = a.copy_to_vec();
-    println!("Pop: {b:?}");
-    a.pop();
+    println!("Pop: {b:?} {c:?}");
+    let c = a.pop();
     let b = a.copy_to_vec();
-    println!("Pop: {b:?}");
+    println!("Pop: {b:?} {c:?}");
 }

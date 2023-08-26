@@ -50,32 +50,61 @@ impl<T: Clone> LinkedList<T> {
         }
     }
 
-    pub fn unprepend(&mut self) {
+    pub fn unprepend(&mut self) -> Option<T> {
         if self.length > 0 {
             self.length -= 1;
+            let out = self.head.clone().unwrap().borrow().value.clone();
             self.head = self.head.clone().unwrap().borrow().next.clone();
+            Some(out)
+        } else {
+            None
         }
     }
 
-    pub fn pop(&mut self) {
+    pub fn pop(&mut self) -> Option<T> {
         if self.length <= 1 {
-            self.unprepend();
+            self.unprepend()
         } else {
             let mut curr = self.head.clone();
-            if self.length == 2 {
+            let out = if self.length == 2 {
+                let out = curr
+                    .clone()
+                    .unwrap()
+                    .borrow()
+                    .next
+                    .clone()
+                    .unwrap()
+                    .borrow()
+                    .value
+                    .clone();
                 curr.unwrap().borrow_mut().next = None;
+                Some(out)
             } else {
                 for _ in 0..self.length - 2 {
                     if let Some(ref_node) = curr {
                         curr = ref_node.borrow().next.clone();
+                    } else {
+                        return None;
                     }
                 }
+                let out = curr
+                    .clone()
+                    .unwrap()
+                    .borrow()
+                    .next
+                    .clone()
+                    .unwrap()
+                    .borrow()
+                    .value
+                    .clone();
                 curr.expect("Should not be possible\n fn pop over steped")
                     .borrow_mut()
                     .next = None;
-            }
+                Some(out)
+            };
             // ref_node.borrow_mut().next = None;
             self.length -= 1;
+            out
         }
     }
 
