@@ -1,9 +1,11 @@
 mod double_linked;
 mod linked;
 mod queue;
+mod stack;
 use double_linked::DLList;
 use linked::LinkedList;
 use queue::Queue;
+use stack::Stack;
 
 fn main() {
     //Linked List Test
@@ -72,7 +74,15 @@ fn main() {
     {
         let mut a = Queue::new();
         a.enqueue(5);
-        println!("{:?}", a.peek());
-        println!("{:?}", a.deque());
+        println!("{:?} {}", a.peek(), a.len());
+        println!("{:?} {}", a.deque(), a.len());
+        println!("{:?} {}", a.deque(), a.len());
+    }
+    {
+        let mut a = Stack::new();
+        a.push(5);
+        println!("{:?} {}", a.peek(), a.len());
+        println!("{:?} {}", a.pop(), a.len());
+        println!("{:?} {}", a.pop(), a.len());
     }
 }

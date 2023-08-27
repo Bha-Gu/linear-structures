@@ -20,6 +20,9 @@ impl<T: Clone> Queue<T> {
         }
     }
 
+    pub const fn len(&self) -> usize {
+        self.length
+    }
     pub fn enqueue(&mut self, item: T) {
         let node = Rc::new(RefCell::new(Node {
             value: item,

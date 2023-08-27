@@ -135,7 +135,13 @@ impl<T: Clone> DLList<T> {
                 next: ref_node.borrow().next.clone(),
                 prev: Some(ref_node.clone()),
             }));
-            ref_node.borrow().next.clone().unwrap().borrow_mut().prev = Some(node.clone());
+            ref_node
+                .borrow()
+                .next
+                .clone()
+                .expect("Should not be possible to see.\n fn insert_at index out of bound")
+                .borrow_mut()
+                .prev = Some(node.clone());
             ref_node.borrow_mut().next = Some(node);
         }
     }
