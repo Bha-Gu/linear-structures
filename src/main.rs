@@ -1,9 +1,12 @@
 mod double_linked;
 mod linked;
+mod queue;
 use double_linked::DLList;
 use linked::LinkedList;
+use queue::Queue;
 
 fn main() {
+    //Linked List Test
     {
         println!("Linked List: ");
         let mut a = LinkedList::new();
@@ -34,6 +37,7 @@ fn main() {
         let b = a.copy_to_vec();
         println!("Pop: {b:?} {c:?} {}", a.len());
     }
+    //Double Linked List Test
     {
         println!("Double Linked List: ");
         let mut a = DLList::new();
@@ -63,5 +67,12 @@ fn main() {
         let c = a.pop();
         let b = a.copy_to_vec();
         println!("Pop: {b:?} {c:?} {}", a.len());
+    }
+    //Queue Test
+    {
+        let mut a = Queue::new();
+        a.enqueue(5);
+        println!("{:?}", a.peek());
+        println!("{:?}", a.deque());
     }
 }
