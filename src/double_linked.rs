@@ -28,6 +28,10 @@ impl<T: Clone> DLList<T> {
         }
     }
 
+    pub const fn len(&self) -> usize {
+        self.length
+    }
+
     fn add_first_node(&mut self, item: T) {
         let node = Rc::new(RefCell::new(Node {
             value: item,
@@ -67,8 +71,8 @@ impl<T: Clone> DLList<T> {
             prev: self.tail.clone(),
         }));
         self.length += 1;
-        if let Some(head) = self.tail.clone() {
-            head.borrow_mut().next = Some(node.clone());
+        if let Some(tail) = self.tail.clone() {
+            tail.borrow_mut().next = Some(node.clone());
         }
         self.tail = Some(node);
     }
@@ -88,6 +92,7 @@ impl<T: Clone> DLList<T> {
             _ => {
                 let out = self.head.clone()?.borrow().value.clone();
                 self.head = self.head.clone()?.borrow().next.clone();
+                self.head.clone()?.borrow_mut().prev = None;
                 self.length -= 1;
                 Some(out)
             }
@@ -101,9 +106,74 @@ impl<T: Clone> DLList<T> {
             _ => {
                 let out = self.tail.clone()?.borrow().value.clone();
                 self.tail = self.tail.clone()?.borrow().prev.clone();
+                self.tail.clone()?.borrow_mut().next = None;
                 self.length -= 1;
                 Some(out)
             }
         }
+    }
+
+    pub fn insert_at(&mut self, item: T, idx: usize) {
+        if idx == 0 || self.length == 0 {
+            self.prepend(item);
+        } else if idx >= self.length {
+            self.append(item);
+        } else {
+            self.length += 1;
+            let mut curr = self.head.clone();
+            for _i in 0..(idx - 1) {
+                if let Some(ref_node) = curr {
+                    curr = ref_node.borrow().next.clone();
+                } else {
+                    break;
+                }
+            }
+            let ref_node =
+                curr.expect("Should not be possible to see.\n fn insert_at index out of bound");
+            let node = Rc::new(RefCell::new(Node {
+                value: item,
+                next: ref_node.borrow().next.clone(),
+                prev: Some(ref_node.clone()),
+            }));
+            ref_node.borrow().next.clone().unwrap().borrow_mut().prev = Some(node.clone());
+            ref_node.borrow_mut().next = Some(node);
+        }
+    }
+
+    pub fn remove_at(&mut self, idx: usize) -> Option<T> {
+        if self.length == 1 {
+            self.remove_last_node()
+        } else if idx == 0 {
+            self.unprepend()
+        } else if idx + 1 >= self.length {
+            self.pop()
+        } else {
+            let mut curr = self.head.clone();
+            for _i in 0..(idx - 1) {
+                if let Some(ref_node) = curr {
+                    curr = ref_node.borrow().next.clone();
+                } else {
+                    break;
+                }
+            }
+            let ref_node = curr?;
+            let next = ref_node.borrow().next.clone()?.borrow().next.clone();
+            let prev = ref_node.borrow().next.clone()?.borrow().prev.clone();
+            let out = ref_node.borrow().next.clone()?.borrow().value.clone();
+            ref_node.borrow_mut().next = next.clone();
+            next?.borrow_mut().prev = prev;
+            self.length -= 1;
+            Some(out)
+        }
+    }
+
+    pub fn copy_to_vec(&self) -> Vec<T> {
+        let mut out = vec![];
+        let mut curr = self.head.clone();
+        while let Some(c_node) = curr {
+            out.push(c_node.borrow().value.clone());
+            curr = c_node.borrow().next.clone();
+        }
+        out
     }
 }
