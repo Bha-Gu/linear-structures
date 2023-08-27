@@ -19,6 +19,10 @@ impl<T: Clone> LinkedList<T> {
         }
     }
 
+    pub const fn len(&self) -> usize {
+        self.length
+    }
+
     pub fn prepend(&mut self, item: T) {
         let node = Rc::new(RefCell::new(Node {
             value: item,
@@ -52,9 +56,9 @@ impl<T: Clone> LinkedList<T> {
 
     pub fn unprepend(&mut self) -> Option<T> {
         if self.length > 0 {
+            let out = self.head.clone()?.borrow().value.clone();
+            self.head = self.head.clone()?.borrow().next.clone();
             self.length -= 1;
-            let out = self.head.clone().unwrap().borrow().value.clone();
-            self.head = self.head.clone().unwrap().borrow().next.clone();
             Some(out)
         } else {
             None
@@ -67,17 +71,8 @@ impl<T: Clone> LinkedList<T> {
         } else {
             let mut curr = self.head.clone();
             let out = if self.length == 2 {
-                let out = curr
-                    .clone()
-                    .unwrap()
-                    .borrow()
-                    .next
-                    .clone()
-                    .unwrap()
-                    .borrow()
-                    .value
-                    .clone();
-                curr.unwrap().borrow_mut().next = None;
+                let out = curr.clone()?.borrow().next.clone()?.borrow().value.clone();
+                curr?.borrow_mut().next = None;
                 Some(out)
             } else {
                 for _ in 0..self.length - 2 {
@@ -87,19 +82,8 @@ impl<T: Clone> LinkedList<T> {
                         return None;
                     }
                 }
-                let out = curr
-                    .clone()
-                    .unwrap()
-                    .borrow()
-                    .next
-                    .clone()
-                    .unwrap()
-                    .borrow()
-                    .value
-                    .clone();
-                curr.expect("Should not be possible\n fn pop over steped")
-                    .borrow_mut()
-                    .next = None;
+                let out = curr.clone()?.borrow().next.clone()?.borrow().value.clone();
+                curr?.borrow_mut().next = None;
                 Some(out)
             };
             // ref_node.borrow_mut().next = None;
@@ -147,23 +131,9 @@ impl<T: Clone> LinkedList<T> {
                     break;
                 }
             }
-            let ref_node = curr.unwrap();
-            let next = ref_node
-                .borrow()
-                .next
-                .clone()
-                .unwrap()
-                .borrow()
-                .next
-                .clone();
-            let out = ref_node
-                .borrow()
-                .next
-                .clone()
-                .unwrap()
-                .borrow()
-                .value
-                .clone();
+            let ref_node = curr?;
+            let next = ref_node.borrow().next.clone()?.borrow().next.clone();
+            let out = ref_node.borrow().next.clone()?.borrow().value.clone();
             ref_node.borrow_mut().next = next;
             self.length -= 1;
             Some(out)
